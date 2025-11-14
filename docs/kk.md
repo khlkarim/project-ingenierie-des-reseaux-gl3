@@ -108,6 +108,8 @@ where:
     
 - Le module Internet détermine que le datagramme est destiné à un programme applicatif de cet hôte. Il transmet alors les données au programme applicatif en réponse à un appel système, en fournissant l’adresse source et d’autres paramètres comme résultats de l’appel.
 
+![Packet flow](../assets/images/ipv4-packet-flow.png)
+
 - **Passerelles**  
 	- Les passerelles implémentent le protocole Internet afin de transférer des datagrammes entre les réseaux.
 	- Elles implémentent également le _Gateway to Gateway Protocol_ (GGP), pour coordonner le routage et d’autres informations de contrôle au sein de l’Internet.
@@ -115,6 +117,8 @@ where:
 
 ---
 ### C)Packet structure:
+
+![Packet structure](../assets/images/ipv4-header.png)
 
 - **Version : 4 bits**  
 	- Ce champ indique le format de l'en-tête Internet. Il vaut 4 dans le cas d'un packet IPv4.
@@ -130,14 +134,7 @@ where:
 		- Bit 5: 0 = Fiabilité normale, 1 = Haute fiabilité
 		- Bits 6–7: Réservés pour usage futur
 
-```
-  0     1     2     3     4     5     6     7
-+-----+-----+-----+-----+-----+-----+-----+-----+
-|                 |     |     |     |     |     |
-|   PRECEDENCE    |  D  |  T  |  R  |  0  |  0  |
-|                 |     |     |     |     |     |
-+-----+-----+-----+-----+-----+-----+-----+-----+
-```
+![Packet structure](../assets/images/ipv4-tos.png)
 
 - Dans de nombreux réseaux, améliorer un paramètre entraîne une dégradation d’un autre. Sauf cas très particuliers, **au plus deux** de ces trois bits devraient être activés.
 
@@ -150,18 +147,10 @@ where:
 	- Valeur attribuée par l’expéditeur pour faciliter la réassemblage des fragments d’un datagramme.
 
 - **Drapeaux : 3 bits**  
-	- Différents drapeaux de contrôle.
+	- il existe 3 bits de contrôle.
 		- Bit 0: réservé, doit être zéro
 		- Bit 1: (DF) 0 = Fragmentation permise, 1 = Ne pas fragmenter
 		- Bit 2: (MF) 0 = Dernier fragment, 1 = Fragments suivants
-
-```
-  0   1   2
-+---+---+---+
-|   | D | M |
-| 0 | F | F |
-+---+---+---+
-```
 
 - **Offset de fragment : 13 bits**  
 	- Indique où ce fragment se situe dans le datagramme original. Exprimé en unités de 8 octets (64 bits). Le premier fragment a un offset de zéro.
@@ -262,4 +251,4 @@ Cependant, à mesure que l’Internet a évolué et s’est étendu au fil des a
 
 - Pour illustrer le processus de la fragmentation IPv4, on a repris l'exemple vu en cours:
 
-![Example fragmentation IPv4](../assets/images/example-frag-v4.png)
+![Example fragmentation IPv4](../assets/images/ipv4-fragmentation.png)
