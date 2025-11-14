@@ -2,9 +2,9 @@
 
 ## Introduction
 
-    **IPv6** (Internet Protocol version 6) est la version la plus récente de IP (Internet Protocol) conçue pour être le successeur de IPv4.
+**IPv6** (Internet Protocol version 6) est la version la plus récente de IP (Internet Protocol) conçue pour être le successeur de IPv4.
 
-    Certaines demandes ont possé la création de IPv6 pour traiter les lacunes de IPv4. Ces améliorations tombent dans les catégories suivantes :
+Certaines demandes ont possé la création de IPv6 pour traiter les lacunes de IPv4. Ces améliorations tombent dans les catégories suivantes :
 
 - **Capacités d’adressage étendues :** IPv6 passe de 32 à 128 bits, permettant plus de niveaux hiérarchiques, un nombre plus élevé d’adresses (2^128 contre 2^32) et une autoconfiguration simplifiée. Le routage multicast est amélioré grâce au champ « scope », et les adresses anycast permettent d’envoyer un paquet vers n’importe quel nœud d’un groupe.
 - **Simplification de l’entête :** Certains champs IPv4 ont été supprimés ou rendus optionnels, réduisant le coût de traitement et la taille de l’entête IPv6.
@@ -16,7 +16,7 @@
 
 ## Entête IPv6
 
-![Figure 1 : L’entête d’un datagramme IPv6](ipv6-header.png)
+![Figure 1 : L’entête d’un datagramme IPv6](/assets/images/ipv6-header.png)
 
 Figure 1 : L’entête d’un datagramme IPv6
 
@@ -29,32 +29,32 @@ Figure 1 : L’entête d’un datagramme IPv6
 - **Adresse Source :** Champ de 128 bits. Il contient l’adresse de la source.
 - **Adresse Destination :** Champ de 128 bits. Il contient l’adresse de la destination.
 
-    Après avoir détaillé le format du datagramme IPv6, il est important d’examiner les extensions, qui permettent d’ajouter des fonctionnalités supplémentaires au protocole.
+Après avoir détaillé le format du datagramme IPv6, il est important d’examiner les extensions, qui permettent d’ajouter des fonctionnalités supplémentaires au protocole.
 
 ## Extensions en IPv6
 
-    En IPv6, les informations optionnelles de la couche Internet sont codées dans des entêtes d’extension, insérées entre l’entête IPv6 et l’entête de la couche supérieure. Il en existe un nombre limité, chacun identifié par une valeur **Prochaine Entête** spécifique.
+En IPv6, les informations optionnelles de la couche Internet sont codées dans des entêtes d’extension, insérées entre l’entête IPv6 et l’entête de la couche supérieure. Il en existe un nombre limité, chacun identifié par une valeur **Prochaine Entête** spécifique.
 
-    Lors du traitement d’une séquence de **Prochaine Entête**, le premier qui n’est pas une entête d’extension indique que l’élément suivant est l’entête de la couche supérieure. Une valeur spéciale **No Next Header** est utilisée lorsqu’il n’y a pas d’entête de couche supérieure.
+Lors du traitement d’une séquence de **Prochaine Entête**, le premier qui n’est pas une entête d’extension indique que l’élément suivant est l’entête de la couche supérieure. Une valeur spéciale **No Next Header** est utilisée lorsqu’il n’y a pas d’entête de couche supérieure.
 
-    Comme illustré dans cette figure, un paquet IPv6 peut contenir zéro, un ou plusieurs entêtes d’extension identifiés par le champ **Prochaine Entête** de l’entête précédente :
+Comme illustré dans cette figure, un paquet IPv6 peut contenir zéro, un ou plusieurs entêtes d’extension identifiés par le champ **Prochaine Entête** de l’entête précédente :
 
-![Figure 2 : Enchainement des entêtes dans IPv6](ipv6-extensions.png)
+![Figure 2 : Enchainement des entêtes dans IPv6](/assets/images/ipv6-extensions.png)
 
 Figure 2 : Enchainement des entêtes dans IPv6
 
-    Au nœud destinataire, le champ **Prochaine Entête** de l’entête IPv6 permet d’invoquer le module traitant la première entête d’extension, ou l’entête de la couche supérieure s’il n’y a pas d’extension. Chaque entête d’extension doit être traitée dans l’ordre, car son contenu détermine si le traitement doit passer à la suivante. Il est interdit de sauter une entête pour en traiter une autre plus loin dans le paquet.
+Au nœud destinataire, le champ **Prochaine Entête** de l’entête IPv6 permet d’invoquer le module traitant la première entête d’extension, ou l’entête de la couche supérieure s’il n’y a pas d’extension. Chaque entête d’extension doit être traitée dans l’ordre, car son contenu détermine si le traitement doit passer à la suivante. Il est interdit de sauter une entête pour en traiter une autre plus loin dans le paquet.
 
-    Si un nœud doit passer à l’entête suivante mais rencontre une valeur **Prochaine Entête** inconnue, le paquet doit être supprimé et un message ICMP « Parameter Problem » envoyé à la source, avec le code 1 et le pointeur indiquant l’emplacement de la valeur non reconnue. La même procédure s’applique si une valeur 0 est trouvée dans une entête autre que l’entête IPv6.
+Si un nœud doit passer à l’entête suivante mais rencontre une valeur **Prochaine Entête** inconnue, le paquet doit être supprimé et un message ICMP « Parameter Problem » envoyé à la source, avec le code 1 et le pointeur indiquant l’emplacement de la valeur non reconnue. La même procédure s’applique si une valeur 0 est trouvée dans une entête autre que l’entête IPv6.
 
-    Chaque entête d’extension est un multiple de 8 octets pour garantir l’alignement des entêtes suivantes. Les champs multi-octets sont alignés sur leurs bornes naturelles (1, 2, 4 ou 8 octets).
+Chaque entête d’extension est un multiple de 8 octets pour garantir l’alignement des entêtes suivantes. Les champs multi-octets sont alignés sur leurs bornes naturelles (1, 2, 4 ou 8 octets).
 
-    Une implémentation complète d’IPv6 contient les entêtes d’extension suivantes :
+Une implémentation complète d’IPv6 contient les entêtes d’extension suivantes :
 
-![Figure 3 : Ordre des extensions en IPv6](ipv6-ext-order.png)
+![Figure 3 : Ordre des extensions en IPv6](/assets/images/ipv6-ext-order.png)
 
 Figure 3 : Ordre des extensions en IPv6
 
-    Dans ce rapport, on s’intéressera à l’extension **Fragmentation**.
+Dans ce rapport, on s’intéressera à l’extension **Fragmentation**.
 
 ## Fragmentation en IPv6
