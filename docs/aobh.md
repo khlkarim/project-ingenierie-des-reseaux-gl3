@@ -12,7 +12,7 @@ Certaines demandes ont possé la création de IPv6 pour traiter les lacunes de I
 - **Étiquetage de flux :** IPv6 peut identifier des séquences de paquets comme un flux unique pour un traitement cohérent dans le réseau.
 - **Sécurité et confidentialité :** IPv6 inclut des extensions pour l’authentification, l’intégrité des données et, optionnellement, la confidentialité.
 
-    Ces améliorations sont rendues possibles par la nouvelle structure de l’entête IPv6, qui sera détaillée dans la section suivante.
+Ces améliorations sont rendues possibles par la nouvelle structure de l’entête IPv6, qui sera détaillée dans la section suivante.
 
 ## Entête IPv6
 
@@ -24,12 +24,12 @@ Figure 1 : L’entête d’un datagramme IPv6
 - **Priorité :** Champ de 8 bits. Il sert à indiquer la priorité et le type de traitement d’un paquet dans le réseau.
 - **Etiquette de Flux :** Champ de 20 bits. Il est utilisé par la source pour grouper une séquence de paquets qui doivent être traitées comme un seul flux dans le réseau.
 - **Longueur de la Charge Utile :** Champ de 16 bits. Il contient la longueur de la charge utile du datagramme, qui est la partie qui se trouve au dessous de ce champ (extensions + données).
-- **Prochaine Entête :** Champ de 8 bits. Il sert a identifier le type de l’entête qui se trouve directement après l’entête IPv6. (Voir …)
+- **Prochaine Entête :** Champ de 8 bits. Il sert à identifier le type de l’entête qui se trouve directement après l’entête IPv6.
 - **Hop Limit :** Champ de 8 bits. Il est décrémenté de 1 par chaque nœud qui l’envoie. Si ce champ est déjà à 0 à la reception ou est décrémenté à 0, le paquet est rejeté par le nœud. Le nœud de destination ne rejette pas le paquet si ce champ est égal à 0.
 - **Adresse Source :** Champ de 128 bits. Il contient l’adresse de la source.
 - **Adresse Destination :** Champ de 128 bits. Il contient l’adresse de la destination.
 
-Après avoir détaillé le format du datagramme IPv6, il est important d’examiner les extensions, qui permettent d’ajouter des fonctionnalités supplémentaires au protocole.
+    Après avoir détaillé le format du datagramme IPv6, il est important d’examiner les extensions, qui permettent d’ajouter des fonctionnalités supplémentaires au protocole.
 
 ## Extensions en IPv6
 
@@ -58,3 +58,40 @@ Figure 3 : Ordre des extensions en IPv6
 Dans ce rapport, on s’intéressera à l’extension **Fragmentation**.
 
 ## Fragmentation en IPv6
+
+Afin de permettre l’envoi de données de taille supérieure à l’MTU (Maximum Transfer Unit) du chemin, IPv6 utilise l’extension de fragmentation.
+
+Contrairement à IPv4, la fragmentation en IPv6 se fait de bout en bout (fragmentation à la source et rassemblage à la destination).
+
+Elle se fait grâce à l’entête fragmentation qui a la forme suivante :
+
+![Figure 4 : L’entête de fragmentation en IPv6](/assets/images/ipv6-fragment.png)
+
+Figure 4 : L’entête de fragmentation en IPv6
+
+- **Prochaine Entête :** Champ de 8 bits. Il sert à identifier le type de l’entête qui se trouve directement après l’entête fragmentation.
+- **Réservé :** Champ de 8 bits réservé. Il est initialisé à 0 lors de la transmission.
+- **Offset du Fragment :** Champ de 13 bits. Il contient la position relative du fragment en mots de 8 octets par rapport aux autres fragments, permettant le rassemblage.
+- **Rés :** Champ de 2 bits réservé. Il est initialisé à 0 lors de la transmission.
+- **M (More Fragment) :** Drapeau de 1 bit. Il est mis à 0 s’il s’agit du dernier fragment, sinon, il est mis à 1.
+- **Identifiant du Packet :** Champ de 32 bits. Il contient le nombre d’ordre du datagramme IPv6 originaire du fragment, il est utilisé lors du rassemblage.
+
+Si la taille d’un datagramme est supérieure à l’MTU, la source commence par lui associer un **Identifiant**. Puis, elle divise la partie des données et associe à chacune une copie de l’entête IPv6 et une extension fragmentation :
+
+![Figure 5 : Fragmentation en IPv6](/assets/images/ipv6-fragmentation.png)
+
+Figure 5 : Fragmentation en IPv6
+
+Pour permettre cette opération, la source doit connaître l’MTU du chemin. Elle peut faire ceci par deux méthodes :
+
+### Utilisation d’un MTU minimal standard
+
+L’une des deux techniques utilisés pour la fragmentation des datagrammes IPv6 est l’adoption d’un MTU standard minimal connu par tout le monde qui est de **1280 octets**.
+
+### Découverte du MTU
+
+L’autre technique consiste à envoyer des paquets dans le chemin et utiliser les messages d’erreur afin de déterminer son MTU :
+
+![Figure 6 : Processus de découverte du MTU en IPv6](/assets/images/ipv6-mtudiscovery.png)
+
+Figure 6 : Processus de découverte du MTU en IPv6
