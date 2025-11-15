@@ -55,7 +55,7 @@
 	- Chaque hôte recevait une adresse IP de 32 bits.
 	- La structure hiérarchique (ID réseau + ID hôte) permettait le routage sur de multiples réseaux.
 - **Format de paquet:** 
-	- IPv4 définissait un en-tête universel et des règles de fragmentation, de routage et de livraison.
+	- IPv4 définissait un entête universel et des règles de fragmentation, de routage et de livraison.
 	- Les routeurs pouvaient lire un paquet IPv4 indépendamment du réseau physique sous-jacent.
 - **La pile TCP/IP:**
 	- **Standardisation d’IPv4 (1981):**
@@ -121,15 +121,15 @@ where:
 
 - Le programme applicatif émetteur prépare ses données et fait appel à son module Internet local pour envoyer ces données sous forme de datagramme, en lui fournissant l’adresse de destination et d’autres paramètres comme arguments de l’appel.
     
-- Le module Internet prépare un en-tête de datagramme et y attache les données. Il détermine ensuite une adresse de réseau local correspondant à l’adresse Internet, dans ce cas l’adresse d’une passerelle. Il envoie ce datagramme et l’adresse de réseau local à l’interface de réseau local.
+- Le module Internet prépare un entête de datagramme et y attache les données. Il détermine ensuite une adresse de réseau local correspondant à l’adresse Internet, dans ce cas l’adresse d’une passerelle. Il envoie ce datagramme et l’adresse de réseau local à l’interface de réseau local.
     
-- L’interface de réseau local crée un en-tête de réseau local, y attache le datagramme, puis envoie l’ensemble via le réseau local.
+- L’interface de réseau local crée un entête de réseau local, y attache le datagramme, puis envoie l’ensemble via le réseau local.
     
-- Le datagramme arrive sur la machine passerelle encapsulé dans l’en-tête de réseau local. L’interface de réseau local retire cet en-tête et remet le datagramme au module Internet.
+- Le datagramme arrive sur la machine passerelle encapsulé dans l’entête de réseau local. L’interface de réseau local retire cet entête et remet le datagramme au module Internet.
     
 - Le module Internet détermine, à partir de l’adresse Internet, que le datagramme doit être retransmis vers un autre hôte sur un second réseau. Il calcule l’adresse de réseau local de l’hôte de destination, puis fait appel à l’interface du réseau local correspondant pour envoyer le datagramme.
     
-- Cette interface de réseau local crée un en-tête de réseau local, y attache le datagramme et envoie l’ensemble vers l’hôte de destination. Sur cet hôte, l’interface de réseau local retire l’en-tête et remet le datagramme au module Internet.
+- Cette interface de réseau local crée un entête de réseau local, y attache le datagramme et envoie l’ensemble vers l’hôte de destination. Sur cet hôte, l’interface de réseau local retire l’entête et remet le datagramme au module Internet.
     
 - Le module Internet détermine que le datagramme est destiné à un programme applicatif de cet hôte. Il transmet alors les données au programme applicatif en réponse à un appel système, en fournissant l’adresse source et d’autres paramètres comme résultats de l’appel.
 
@@ -146,10 +146,10 @@ where:
 ![Packet structure](../assets/images/ipv4-header.png)
 
 - **Version : 4 bits**  
-	- Ce champ indique le format de l'en-tête Internet. Il vaut 4 dans le cas d'un packet IPv4.
+	- Ce champ indique le format de l'entête Internet. Il vaut 4 dans le cas d'un packet IPv4.
 
 - **IHL : 4 bits**  
-	- La longueur de l’en-tête Internet (Internet Header Length) est exprimée en mots de 32 bits. La valeur minimale pour un en-tête correct est 5.
+	- La longueur de l’entête Internet (Internet Header Length) est exprimée en mots de 32 bits. La valeur minimale pour un entête correct est 5.
 
 - **Type de service : 8 bits**  
 	- Le type de service indique les **paramètres abstraits** de la **qualité de service souhaitée**. Ces paramètres servent à **guider la sélection des paramètres réels** du service lors de la transmission d’un datagramme à travers un réseau particulier.
@@ -164,7 +164,7 @@ where:
 - Dans de nombreux réseaux, améliorer un paramètre entraîne une dégradation d’un autre. Sauf cas très particuliers, **au plus deux** de ces trois bits devraient être activés.
 
 - **Longueur totale : 16 bits**  
-	- La longueur totale correspond à la taille du datagramme en octets, incluant l’en-tête Internet et les données. 
+	- La longueur totale correspond à la taille du datagramme en octets, incluant l’entête Internet et les données. 
 	- Elle permet une taille maximale de 65 535 octets. 
 	- Tous les hôtes doivent être capables d’accepter des datagrammes jusqu’à 576 octets. 
 
@@ -181,16 +181,16 @@ where:
 	- Indique où ce fragment se situe dans le datagramme original. Exprimé en unités de 8 octets (64 bits). Le premier fragment a un offset de zéro.
 
 - **Durée de vie (TTL) : 8 bits**  
-	- Indique le temps maximum pendant lequel le datagramme peut rester dans le système Internet. Si ce champ vaut zéro, le datagramme doit être détruit. Il est modifié à chaque traitement de l’en-tête.
+	- Indique le temps maximum pendant lequel le datagramme peut rester dans le système Internet. Si ce champ vaut zéro, le datagramme doit être détruit. Il est modifié à chaque traitement de l’entête.
 
 - **Protocole : 8 bits**  
 	- Indique le protocole de niveau supérieur utilisé dans la partie données du datagramme Internet.
 
 - **Checksum: 16 bits**  
-	- Checksum portant uniquement sur l’en-tête. Comme certains champs changent (ex. : TTL), elle est **recalculée et vérifiée à chaque traitement.**
+	- Checksum portant uniquement sur l’entête. Comme certains champs changent (ex. : TTL), elle est **recalculée et vérifiée à chaque traitement.**
 	
 	- Algorithme
-		- Le checksum est le complément à un de la somme, elle-même en complément à un, de tous les mots de 16 bits de l’en-tête. Pour le calcul, le champ de somme de contrôle vaut zéro.
+		- Le checksum est le complément à un de la somme, elle-même en complément à un, de tous les mots de 16 bits de l’entête. Pour le calcul, le champ de somme de contrôle vaut zéro.
 		- Cette somme est simple à calculer et semble adéquate selon les expériences.
 
 - **Adresse source : 32 bits**  
@@ -230,7 +230,7 @@ where:
 |2|4|var.|Horodatage Internet|
 
 - **Padding : variable**  
-	- Padding de l’en-tête Internet sert à aligner celui-ci sur une limite de 32 bits. Il est constitué de zéros.
+	- Padding de l’entête Internet sert à aligner celui-ci sur une limite de 32 bits. Il est constitué de zéros.
 
 ---
 ### D) Limitations: The exhaustion problem
@@ -272,7 +272,7 @@ Cependant, à mesure que l’Internet a évolué et s’est étendu au fil des a
 
 - Le champ d’identification est utilisé pour distinguer les fragments d’un datagramme de ceux d’un autre. Le module de protocole émetteur d’un datagramme internet assigne au champ d’identification une valeur qui doit être unique pour cette paire source–destination et ce protocole, pendant toute la durée durant laquelle le datagramme reste actif dans le système internet. Le module de protocole émetteur d’un datagramme complet positionne l’indicateur “plus de fragments” à zéro et l’offset de fragment à zéro.
 
-- Pour rassembler les fragments d’un datagramme internet, un module du protocole Internet (par exemple sur un hôte de destination) combine les datagrammes internet qui ont la même valeur pour les quatre champs: identification, source, destination et protocole. La combinaison est effectuée en plaçant la partie données de chaque fragment à la position relative indiquée par l’offset de fragment dans l’en-tête internet de ce fragment. Le premier fragment possède un offset de fragment égal à zéro, et le dernier fragment a l’indicateur “plus de fragments” remis à zéro.
+- Pour rassembler les fragments d’un datagramme internet, un module du protocole Internet (par exemple sur un hôte de destination) combine les datagrammes internet qui ont la même valeur pour les quatre champs: identification, source, destination et protocole. La combinaison est effectuée en plaçant la partie données de chaque fragment à la position relative indiquée par l’offset de fragment dans l’entête internet de ce fragment. Le premier fragment possède un offset de fragment égal à zéro, et le dernier fragment a l’indicateur “plus de fragments” remis à zéro.
 
 - Pour illustrer le processus de la fragmentation IPv4, on a repris l'exemple vu en cours:
 

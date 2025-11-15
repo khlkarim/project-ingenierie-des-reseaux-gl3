@@ -1,29 +1,3 @@
-# Plan
-# Introdution
-# Chapitre I — Description du protocole IPv4
-## 1 - Motivation
-### A) Le préexistant (1960 – 1980)
-### B) Limitations des réseaux à l’époque
-### C) L’émergence de IPv4
-## 2 - Implementation
-### A) Le module internet
-### B) Packet flow
-### C) Packet structure
-### D) Limitations: The exhaustion problem
-### E) Les solutions proposées
-# Chapitre II — Description du protocole IPv6
-## 1 - Introduction
-## 2 - Entête IPv6
-## 3 - Extensions en IPv6
-# Chapitre III — Description de la fragmentation IPv4
-# Chapitre IV — Description de la fragmentation IPv6
-## 1 - Utilisation d’un MTU minimal standard
-## 2 - Découverte du MTU
-# Chapitre V — Comparaison entre IPv4 et IPv6
-# Conclusion
-# Bibliographie
-
----
 # Introduction
 
 L’architecture de l’Internet moderne repose sur un ensemble de protocoles standardisés, dont le rôle principal est de permettre l’interconnexion de réseaux hétérogènes à grande échelle. Parmi ces protocoles, IPv4 et IPv6 occupent une place centrale dans le fonctionnement de l’Internet, puisqu’ils définissent la manière dont les machines s’identifient et échangent des données à travers le réseau mondial.
@@ -42,6 +16,7 @@ Le présent rapport analyse les mécanismes internes des protocoles IPv4 et IPv6
 - Il n’existait pas encore de **pile réseaux** entièrement standardisée.
 
 ![ARPANET](../assets/images/Arpanet_in_the_1970s.png)
+Figure 1 - ARPANET dans les années 1970
 
 ---
 ### B) Limitations des réseaux à l’époque:
@@ -63,7 +38,7 @@ Le présent rapport analyse les mécanismes internes des protocoles IPv4 et IPv6
 	- Chaque hôte recevait une adresse IP de 32 bits.
 	- La structure hiérarchique (ID réseau + ID hôte) permettait le routage sur de multiples réseaux.
 - **Format de paquet:** 
-	- IPv4 définissait un en-tête universel et des règles de fragmentation, de routage et de livraison.
+	- IPv4 définissait un entête universel et des règles de fragmentation, de routage et de livraison.
 	- Les routeurs pouvaient lire un paquet IPv4 indépendamment du réseau physique sous-jacent.
 - **La pile TCP/IP:**
 	- **Standardisation d’IPv4 (1981):**
@@ -72,6 +47,7 @@ Le présent rapport analyse les mécanismes internes des protocoles IPv4 et IPv6
 	- Ensemble, ils formaient la pile TCP/IP: IP comme couche réseau, TCP comme couche transport.
 
 ![1987 Internet map](../assets/images/87_internet_map.gif)
+Figure 2 - Internet map dans les années 1987
 
 ---
 ## 2 - Implementation
@@ -85,20 +61,6 @@ Le présent rapport analyse les mécanismes internes des protocoles IPv4 et IPv6
 
 ```c
 void SEND(src, dst, prot, TOS, TTL, BufPTR, len, Id, DF, opt => result)
-where:
-	src = source address
-	dst = destination address
-	prot = protocol
-	TOS = type of service
-	TTL = time to live
-	BufPTR = buffer pointer
-	len = length of buffer
-	Id  = Identifier
-	DF = Don't Fragment
-	opt = option data
-	result = response
-		OK = datagram sent ok
-		Error = error in arguments or local network error
 ```
 
 - Si les arguments sont valides et que le datagramme est accepté par le réseau local, l’appel se termine avec succès.  
@@ -106,17 +68,6 @@ where:
 
 ```c
 void RECV(BufPTR, prot, => result, src, dst, TOS, len, opt)
-where:
-	BufPTR = buffer pointer
-	prot = protocol
-	result = response
-		OK = datagram received ok
-		Error = error in arguments
-	len = length of buffer
-	src = source address
-	dst = destination address
-	TOS = type of service
-	opt = option data
 ```
 
 - Lorsqu’un datagramme arrive dans le module du protocole Internet depuis le réseau local, soit un appel RECV correspondant de l’utilisateur concerné est en attente, soit il n’y en a pas:
@@ -129,19 +80,20 @@ where:
 
 - Le programme applicatif émetteur prépare ses données et fait appel à son module Internet local pour envoyer ces données sous forme de datagramme, en lui fournissant l’adresse de destination et d’autres paramètres comme arguments de l’appel.
     
-- Le module Internet prépare un en-tête de datagramme et y attache les données. Il détermine ensuite une adresse de réseau local correspondant à l’adresse Internet, dans ce cas l’adresse d’une passerelle. Il envoie ce datagramme et l’adresse de réseau local à l’interface de réseau local.
+- Le module Internet prépare un entête de datagramme et y attache les données. Il détermine ensuite une adresse de réseau local correspondant à l’adresse Internet, dans ce cas l’adresse d’une passerelle. Il envoie ce datagramme et l’adresse de réseau local à l’interface de réseau local.
     
-- L’interface de réseau local crée un en-tête de réseau local, y attache le datagramme, puis envoie l’ensemble via le réseau local.
+- L’interface de réseau local crée un entête de réseau local, y attache le datagramme, puis envoie l’ensemble via le réseau local.
     
-- Le datagramme arrive sur la machine passerelle encapsulé dans l’en-tête de réseau local. L’interface de réseau local retire cet en-tête et remet le datagramme au module Internet.
+- Le datagramme arrive sur la machine passerelle encapsulé dans l’entête de réseau local. L’interface de réseau local retire cet entête et remet le datagramme au module Internet.
     
 - Le module Internet détermine, à partir de l’adresse Internet, que le datagramme doit être retransmis vers un autre hôte sur un second réseau. Il calcule l’adresse de réseau local de l’hôte de destination, puis fait appel à l’interface du réseau local correspondant pour envoyer le datagramme.
     
-- Cette interface de réseau local crée un en-tête de réseau local, y attache le datagramme et envoie l’ensemble vers l’hôte de destination. Sur cet hôte, l’interface de réseau local retire l’en-tête et remet le datagramme au module Internet.
+- Cette interface de réseau local crée un entête de réseau local, y attache le datagramme et envoie l’ensemble vers l’hôte de destination. Sur cet hôte, l’interface de réseau local retire l’entête et remet le datagramme au module Internet.
     
 - Le module Internet détermine que le datagramme est destiné à un programme applicatif de cet hôte. Il transmet alors les données au programme applicatif en réponse à un appel système, en fournissant l’adresse source et d’autres paramètres comme résultats de l’appel.
 
 ![Packet flow](../assets/images/ipv4-packet-flow.png)
+Figure 3 - IPv4 Packet flow
 
 - **Passerelles**  
 	- Les passerelles implémentent le protocole Internet afin de transférer des datagrammes entre les réseaux.
@@ -152,12 +104,13 @@ where:
 ### C)Packet structure:
 
 ![Packet structure](../assets/images/ipv4-header.png)
+Figure 4 - Format Packet IPv4
 
 - **Version : 4 bits**  
-	- Ce champ indique le format de l'en-tête Internet. Il vaut 4 dans le cas d'un packet IPv4.
+	- Ce champ indique le format de l'entête Internet. Il vaut 4 dans le cas d'un packet IPv4.
 
 - **IHL : 4 bits**  
-	- La longueur de l’en-tête Internet (Internet Header Length) est exprimée en mots de 32 bits. La valeur minimale pour un en-tête correct est 5.
+	- La longueur de l’entête Internet (Internet Header Length) est exprimée en mots de 32 bits. La valeur minimale pour un entête correct est 5.
 
 - **Type de service : 8 bits**  
 	- Le type de service indique les **paramètres abstraits** de la **qualité de service souhaitée**. Ces paramètres servent à **guider la sélection des paramètres réels** du service lors de la transmission d’un datagramme à travers un réseau particulier.
@@ -168,11 +121,12 @@ where:
 		- Bits 6–7: Réservés pour usage futur
 
 ![Packet structure](../assets/images/ipv4-tos.png)
+Figure 5 - Champ qualité de service IPv4 
 
 - Dans de nombreux réseaux, améliorer un paramètre entraîne une dégradation d’un autre. Sauf cas très particuliers, **au plus deux** de ces trois bits devraient être activés.
 
 - **Longueur totale : 16 bits**  
-	- La longueur totale correspond à la taille du datagramme en octets, incluant l’en-tête Internet et les données. 
+	- La longueur totale correspond à la taille du datagramme en octets, incluant l’entête Internet et les données. 
 	- Elle permet une taille maximale de 65 535 octets. 
 	- Tous les hôtes doivent être capables d’accepter des datagrammes jusqu’à 576 octets. 
 
@@ -189,16 +143,16 @@ where:
 	- Indique où ce fragment se situe dans le datagramme original. Exprimé en unités de 8 octets (64 bits). Le premier fragment a un offset de zéro.
 
 - **Durée de vie (TTL) : 8 bits**  
-	- Indique le temps maximum pendant lequel le datagramme peut rester dans le système Internet. Si ce champ vaut zéro, le datagramme doit être détruit. Il est modifié à chaque traitement de l’en-tête.
+	- Indique le temps maximum pendant lequel le datagramme peut rester dans le système Internet. Si ce champ vaut zéro, le datagramme doit être détruit. Il est modifié à chaque traitement de l’entête.
 
 - **Protocole : 8 bits**  
 	- Indique le protocole de niveau supérieur utilisé dans la partie données du datagramme Internet.
 
 - **Checksum: 16 bits**  
-	- Checksum portant uniquement sur l’en-tête. Comme certains champs changent (ex. : TTL), elle est **recalculée et vérifiée à chaque traitement.**
+	- Checksum portant uniquement sur l’entête. Comme certains champs changent (ex. : TTL), elle est **recalculée et vérifiée à chaque traitement.**
 	
 	- Algorithme
-		- Le checksum est le complément à un de la somme, elle-même en complément à un, de tous les mots de 16 bits de l’en-tête. Pour le calcul, le champ de somme de contrôle vaut zéro.
+		- Le checksum est le complément à un de la somme, elle-même en complément à un, de tous les mots de 16 bits de l’entête. Pour le calcul, le champ de somme de contrôle vaut zéro.
 		- Cette somme est simple à calculer et semble adéquate selon les expériences.
 
 - **Adresse source : 32 bits**  
@@ -238,14 +192,16 @@ where:
 |2|4|var.|Horodatage Internet|
 
 - **Padding : variable**  
-	- Padding de l’en-tête Internet sert à aligner celui-ci sur une limite de 32 bits. Il est constitué de zéros.
+	- Padding de l’entête Internet sert à aligner celui-ci sur une limite de 32 bits. Il est constitué de zéros.
 
 ---
 ### D) Limitations: The exhaustion problem
 
 ![The exhausion problem](../assets/images/exhausion.png)
+Figure 6 - The exhausion problem
 
 ![256 columns](../assets/images/256_columns.png)
+Figure 7 - L'allocation des plages d'adresses IPv4
 
 Pour offrir une flexibilité dans l’attribution des adresses aux réseaux et permettre un grand nombre de réseaux de petite à moyenne taille, l’interprétation du champ d’adresse est codée de manière à spécifier un petit nombre de réseaux avec un grand nombre d’hôtes (classe A), un nombre modéré de réseaux avec un nombre modéré d’hôtes (classe B), et un grand nombre de réseaux avec un petit nombre d’hôtes (classe C).
 
@@ -274,17 +230,18 @@ Cependant, à mesure que l’Internet a évolué et s’est étendu au fil des a
 ---
 # Chapitre III — Description de la fragmentation IPv4
 
-- Lors de l’acheminement des messages d’un module internet à un autre, il peut être nécessaire que les datagrammes traversent un réseau dont la taille maximale de paquet est inférieure à la taille du datagramme. Pour contourner cette difficulté, un mécanisme de fragmentation est prévu dans le protocole Internet.
+Lors du transfert de datagrammes entre deux modules Internet, il peut arriver qu’un réseau intermédiaire impose une taille maximale de paquet inférieure à celle du datagramme initial. Dans ce cas, le protocole IP prévoit un mécanisme de **fragmentation** permettant de découper le datagramme en fragments compatibles avec les limitations du réseau traversé.
 
-- Un datagramme internet peut être marqué “ne pas fragmenter”. Tout datagramme portant cette indication ne doit en aucun cas être fragmenté par le protocole Internet. Si un datagramme ainsi marqué ne peut pas être livré à sa destination sans être fragmenté, il doit être abandonné.
+- **Le champ Identification :** sert à distinguer les fragments appartenant à un même datagramme de ceux issus d’autres datagrammes. Le module émetteur attribue à ce champ une valeur unique pour la paire source–destination et le protocole concerné, valable tant que le datagramme reste actif dans l’Internet.
+- Un datagramme peut cependant être marqué par l’indicateur "_ne pas fragmenter_". Lorsqu’il est présent, aucune fragmentation ne doit être réalisée. Si un tel datagramme ne peut pas atteindre sa destination sans être fragmenté, il doit être abandonné.
+- Lorsqu’un datagramme est transmis sans fragmentation, l’indicateur "_plus de fragments_" est positionné à zéro et l’offset de fragment est également nul.
 
-- Le champ d’identification est utilisé pour distinguer les fragments d’un datagramme de ceux d’un autre. Le module de protocole émetteur d’un datagramme internet assigne au champ d’identification une valeur qui doit être unique pour cette paire source–destination et ce protocole, pendant toute la durée durant laquelle le datagramme reste actif dans le système internet. Le module de protocole émetteur d’un datagramme complet positionne l’indicateur “plus de fragments” à zéro et l’offset de fragment à zéro.
+La reconstitution d’un datagramme fragmenté s’effectue du côté de la destination. Les fragments sont regroupés selon quatre champs identiques : **identification**, **adresse source**, **adresse destination** et **protocole**. Chaque fragment est réassemblé en plaçant sa partie utile à la position indiquée par son offset. Le premier fragment est celui dont l’offset vaut zéro, tandis que le dernier est celui pour lequel l’indicateur "_plus de fragments_" est remis à zéro.
 
-- Pour rassembler les fragments d’un datagramme internet, un module du protocole Internet (par exemple sur un hôte de destination) combine les datagrammes internet qui ont la même valeur pour les quatre champs: identification, source, destination et protocole. La combinaison est effectuée en plaçant la partie données de chaque fragment à la position relative indiquée par l’offset de fragment dans l’en-tête internet de ce fragment. Le premier fragment possède un offset de fragment égal à zéro, et le dernier fragment a l’indicateur “plus de fragments” remis à zéro.
-
-- Pour illustrer le processus de la fragmentation IPv4, on a repris l'exemple vu en cours:
+Pour illustrer le fonctionnement de la fragmentation IPv4, nous reprenons l’exemple présenté en cours :
 
 ![Example fragmentation IPv4](../assets/images/ipv4-fragmentation.png)
+Figure 8 - Exemple fragmentation IPv4
 
 ---
 
@@ -311,7 +268,7 @@ Ces améliorations sont rendues possibles par la nouvelle structure de l’entê
 ## 2 - Entête IPv6
 
 ![Figure 1 : L’entête d’un datagramme IPv6](/assets/images/ipv6-header.png)
-Figure 1 : L’entête d’un datagramme IPv6
+Figure 9 : L’entête d’un datagramme IPv6
 
 - **Version :** Champ de 4 bits. Il contient la version de IP utilisée (sa valeur est 0110 pour IPv6)
 
@@ -341,7 +298,7 @@ Lors du traitement d’une séquence de **Prochaine Entête**, le premier qui n�
 Comme illustré dans cette figure, un paquet IPv6 peut contenir zéro, un ou plusieurs entêtes d’extension identifiés par le champ **Prochaine Entête** de l’entête précédente :
 
 ![Figure 2 : Enchainement des entêtes dans IPv6](/assets/images/ipv6-extensions.png)
-Figure 2 : Enchainement des entêtes dans IPv6
+Figure 10 : Enchainement des entêtes dans IPv6
 
 Au nœud destinataire, le champ **Prochaine Entête** de l’entête IPv6 permet d’invoquer le module traitant la première entête d’extension, ou l’entête de la couche supérieure s’il n’y a pas d’extension. Chaque entête d’extension doit être traitée dans l’ordre, car son contenu détermine si le traitement doit passer à la suivante. Il est interdit de sauter une entête pour en traiter une autre plus loin dans le paquet.
 
@@ -352,7 +309,7 @@ Chaque entête d’extension est un multiple de 8 octets pour garantir l’align
 Une implémentation complète d’IPv6 contient les entêtes d’extension suivantes :
 
 ![Figure 3 : Ordre des extensions en IPv6](/assets/images/ipv6-ext-order.png)
-Figure 3 : Ordre des extensions en IPv6
+Figure 11 : Ordre des extensions en IPv6
 
 Dans ce rapport, on s’intéressera à l’extension **Fragmentation**.
 
@@ -366,7 +323,7 @@ Contrairement à IPv4, la fragmentation en IPv6 se fait de bout en bout (fragmen
 Elle se fait grâce à l’entête fragmentation qui a la forme suivante :
 
 ![Figure 4 : L’entête de fragmentation en IPv6](/assets/images/ipv6-fragment.png)
-Figure 4 : L’entête de fragmentation en IPv6
+Figure 12 : L’entête de fragmentation en IPv6
 
 - **Prochaine Entête :** Champ de 8 bits. Il sert à identifier le type de l’entête qui se trouve directement après l’entête fragmentation.
 
@@ -383,7 +340,7 @@ Figure 4 : L’entête de fragmentation en IPv6
 Si la taille d’un datagramme est supérieure à l’MTU, la source commence par lui associer un **Identifiant**. Puis, elle divise la partie des données et associe à chacune une copie de l’entête IPv6 et une extension fragmentation :
 
 ![Figure 5 : Fragmentation en IPv6](/assets/images/ipv6-fragmentation.png)
-Figure 5 : Fragmentation en IPv6
+Figure 13 : Fragmentation en IPv6
 
 Pour permettre cette opération, la source doit connaître l’MTU du chemin. Elle peut faire ceci par deux méthodes :
 
@@ -398,7 +355,7 @@ L’une des deux techniques utilisés pour la fragmentation des datagrammes IPv6
 L’autre technique consiste à envoyer des paquets dans le chemin et utiliser les messages d’erreur afin de déterminer son MTU :
 
 ![Figure 6 : Processus de découverte du MTU en IPv6](/assets/images/ipv6-mtudiscovery.png)
-Figure 6 : Processus de découverte du MTU en IPv6
+Figure 14 : Processus de découverte du MTU en IPv6
 
 ---
 # Chapitre V — Comparaison entre IPv4 et IPv6
@@ -407,10 +364,10 @@ Figure 6 : Processus de découverte du MTU en IPv6
 | ---------------------------------- | -------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | **Année d’introduction**           | 1981 (RFC 791)                                           | 1998 (RFC 2460 → RFC 8200)                   | IPv4 a été conçu pour un réseau expérimental; IPv6 pour un Internet mondial.                 |
 | **Taille d’adresse**               | 32 bits                                                  | 128 bits                                     | Le passage à 128 bits résout de manière définitive la rareté des adresses.                   |
-| **Longueur de l’en-tête**          | Variable (20–60 octets)                                  | Fixe (40 octets)                             | IPv6 simplifie le traitement par les routeurs.                                               |
-| **Champs de l’en-tête**            | Beaucoup de champs + options                             | Peu de champs, options via extensions        | IPv6 réduit la complexité des routeurs en déplaçant les options hors de l’en-tête principal. |
+| **Longueur de l’entête**          | Variable (20–60 octets)                                  | Fixe (40 octets)                             | IPv6 simplifie le traitement par les routeurs.                                               |
+| **Champs de l’entête**            | Beaucoup de champs + options                             | Peu de champs, options via extensions        | IPv6 réduit la complexité des routeurs en déplaçant les options hors de l’entête principal. |
 | **Méthode de fragmentation**       | Router-side fragmentation (réseau)                       | End-to-end fragmentation (source uniquement) | IPv6 suit le principe « end-to-end » : le réseau ne modifie plus les paquets.                |
-| **Champs liés à la fragmentation** | Dans l’en-tête principal (Identification, Flags, Offset) | En-tête d’extension "Fragment" uniquement    | Cela allège l’en-tête IPv6 et optimise le traitement.                                        |
+| **Champs liés à la fragmentation** | Dans l’entête principal (Identification, Flags, Offset) | entête d’extension "Fragment" uniquement    | Cela allège l’entête IPv6 et optimise le traitement.                                        |
 | **Gestion de la charge réseau**    | Les routeurs travaillent plus                            | Routeurs simplifiés                          | IPv6 améliore la scalabilité pour les grands réseaux.                                        |
 | **Checksum**                       | Présent                                                  | Absent                                       | IPv6 supprime le checksum pour accélérer le traitement (redondant avec TCP/UDP).             |
 | **Sécurité intégrée**              | IPSec optionnel                                          | IPSec prévu dans la conception               | IPv6 n’impose pas IPSec mais l’intègre plus naturellement dans le protocole.                 |
@@ -419,10 +376,18 @@ Figure 6 : Processus de découverte du MTU en IPv6
 | **Transition**                     | Protocole dominant                                       | Déploiement progressif                       | Coexistence longue, due aux coûts et aux infrastructures existantes.                         |
 
 ---
-# **Conclusion**
+# Conclusion
 
 L’étude des protocoles IPv4 et IPv6 met en évidence la manière dont les technologies réseau évoluent pour répondre à des besoins toujours croissants en matière d’adressage, de performance et de fiabilité. IPv4, conçu à une époque où l’Internet n’était encore qu’un projet expérimental, a démontré une longévité remarquable. Toutefois, des limites structurelles, notamment l’espace d’adressage restreint, ont rendu incontournable la conception d’un successeur plus adapté à l’Internet contemporain.
 
 IPv6 répond à ces défis en proposant une architecture simplifiée, un espace d’adresses considérablement étendu et un traitement plus efficace des paquets, tout en introduisant de nouvelles méthodes pour gérer la fragmentation et le MTU. Malgré ces avantages, son déploiement demeure progressif et dépend de nombreux facteurs techniques, économiques et organisationnels.
 
 Dans l’ensemble, cette comparaison souligne la transition nécessaire vers IPv6 pour garantir l’évolution durable du réseau mondial, tout en mettant en lumière l’ingéniosité et la robustesse du protocole IPv4 qui continue, encore aujourd’hui, de supporter une grande partie de l’Internet.
+
+---
+# Bibliographie
+
+- J. Postel, *RFC 791 — Internet Protocol*, DARPA, September 1981. https://www.rfc-editor.org/rfc/rfc791.html
+- G. Huston, *IPv4 Address Report* https://ipv4.potaroo.net/
+- Computer History, *Internet History of 1980s* https://www.computerhistory.org/internethistory/1980s/
+- Wikipedia, *IPv4*
