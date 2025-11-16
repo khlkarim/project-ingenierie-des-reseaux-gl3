@@ -1,3 +1,25 @@
+# Liste des figures:
+- Figure 1 - ARPANET dans les années 1970
+- Figure 2 - Carte d'Internet en 1987
+- Figure 3 - Flux de paquets IPv4
+- Figure 4 - L'entête d'un datagramme IPv4
+- Figure 5 - Champ type de service IPv4
+- Figure 6 - The exhaustion problem
+- Figure 7 - L'allocation des plages d'adresses IPv4 par blocs de /8
+- Figure 8 - Exemple de la fragmentation IPv4
+- Figure 9 - L'entête d'un datagramme IPv6
+- Figure 10 - Enchainement des entêtes dans IPv6
+- Figure 11 - Ordre des extensions en IPv6
+- Figure 12 - L'entête de fragmentation en IPv6
+- Figure 13 - Fragmentation en IPv6
+- Figure 14 - Processus de découverte du MTU en IPv6
+- Figure 15 - Exemple de la fragmentation IPv6
+# Liste des tableaux:
+
+- Tableau 1: Les différentes options qu'un paquet IPv4 peut inclure
+- Tableau 2: Le résultat du processus de fragmentation IPv4
+- Tableau 3: Le résultat d'un exemple de fragmentation IPv6
+
 # I - Introduction
 
 L'architecture de l'Internet moderne repose sur un ensemble de protocoles standardisés, dont le rôle principal est de permettre l'interconnexion de réseaux hétérogènes à grande échelle. Parmi ces protocoles, IPv4 et IPv6 occupent une place centrale dans le fonctionnement de l'Internet, puisqu'ils définissent la manière dont les machines s'identifient et échangent des données à travers le réseau mondial.
@@ -83,27 +105,27 @@ Figure 3 - Flux de paquets IPv4
     - Prépare les données à transmettre.
     - Appelle son module Internet local pour envoyer un datagramme.
 - **Module Internet (source)**
-    - Construit l'en-tête du datagramme et y attache les données.
+    - Construit l'entête du datagramme et y attache les données.
     - Détermine l'adresse de réseau local correspondant à l'adresse Internet (ici, celle d'une passerelle).
     - Transmet le datagramme et l'adresse locale à l'interface réseau.
 - **Interface réseau locale (source)**
-    - Crée une trame en ajoutant une en-tête de réseau local.
+    - Crée une trame en ajoutant une entête de réseau local.
     - Envoie la trame sur le réseau local.
 
 - **Réception par la passerelle**
     - La trame arrive encapsulant le datagramme.
-    - L'interface réseau de la passerelle retire l'en-tête local et remet le datagramme à son module Internet.
+    - L'interface réseau de la passerelle retire l'entête local et remet le datagramme à son module Internet.
 - **Module Internet (passerelle)**
     - Analyse l'adresse Internet du datagramme.
     - Détermine qu'il doit être relayé vers un autre réseau.
     - Calcule l'adresse locale de l'hôte de destination.
     - Transmet le datagramme à l'interface réseau adaptée.
 - **Interface réseau (passerelle)**
-    - Crée une nouvelle en-tête de réseau local.
+    - Crée une nouvelle entête de réseau local.
     - Encapsule et envoie le tout en direction de l'hôte de destination.
 
 - **Interface réseau (destination)**
-    - Retire l'en-tête du réseau local.
+    - Retire l'entête du réseau local.
     - Remet le datagramme au module Internet.
 - **Module Internet (destination)**
     - Identifie que le datagramme est destiné à un programme applicatif local.
@@ -225,6 +247,9 @@ Figure 5 - Champ type de service IPv4
 | 0 | 7 | var. | Enregistrement de route |
 | 0 | 8 | 4 | Identifiant de flux |
 | 2 | 4 | var. | Horodatage Internet |
+
+Tableau 1: Les différentes options qu'un paquet IPv4 peut inclure
+
 - **Padding : Variable**
     
     Padding de l'entête Internet sert à aligner celui-ci sur une limite de 32 bits. Il est constitué de zéros.
@@ -306,7 +331,7 @@ Pour illustrer le fonctionnement de la fragmentation IPv4, nous reprenons l'exem
 Figure 8 - Exemple de la fragmentation IPv4
 
 
-| **f1**     | **Position Relative** | **D**   | **M**   | **Longeur Totale** |
+| **Fragments**     | **Position Relative** | **D**   | **M**   | **Longeur Totale** |
 | ------ | ----------------- | --- | --- | -------------- |
 | **f1.1.1** | 0                 | 0   | 1   | 900            |
 | **f1.1.2** | 110               | 0   | 1   | 900            |
@@ -314,6 +339,7 @@ Figure 8 - Exemple de la fragmentation IPv4
 | **f1.2.1** | 247               | 0   | 1   | 900            |
 | **f1.2.2** | 357               | 0   | 0   | 144            |
 
+Tableau 2: Le résultat du processus de fragmentation IPv4
 
 # IV - Description du protocole IPv6
 
@@ -473,6 +499,8 @@ Figure 15 - Exemple de la fragmentation IPv6
 | **f2** | 1240 | 154 | 1 | 256 |
 | **f3** | 1240 | 308 | 1 | 256 |
 | **f4** | 312 | 462 | 0 | 256 |
+
+Tableau 3: Le résultat d'un exemple de fragmentation IPv6
 
 # VI - Conclusion
 
