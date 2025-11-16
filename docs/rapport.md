@@ -38,7 +38,7 @@ Figure 1 - ARPANET dans les années 1970
 	- Chaque hôte recevait une adresse IP de 32 bits.
 	- La structure hiérarchique (ID réseau + ID hôte) permettait le routage sur de multiples réseaux.
 - **Format de paquet:** 
-	- IPv4 définissait un entête universel et des règles de fragmentation, de routage et de livraison.
+	- IPv4 définissait une entête universel et des règles de fragmentation, de routage et de livraison.
 	- Les routeurs pouvaient lire un paquet IPv4 indépendamment du réseau physique sous-jacent.
 - **La pile TCP/IP:**
 	- **Standardisation d’IPv4 (1981):**
@@ -80,15 +80,15 @@ void RECV(BufPTR, prot, => result, src, dst, TOS, len, opt)
 
 - Le programme applicatif émetteur prépare ses données et fait appel à son module Internet local pour envoyer ces données sous forme de datagramme, en lui fournissant l’adresse de destination et d’autres paramètres comme arguments de l’appel.
     
-- Le module Internet prépare un entête de datagramme et y attache les données. Il détermine ensuite une adresse de réseau local correspondant à l’adresse Internet, dans ce cas l’adresse d’une passerelle. Il envoie ce datagramme et l’adresse de réseau local à l’interface de réseau local.
+- Le module Internet prépare une entête de datagramme et y attache les données. Il détermine ensuite une adresse de réseau local correspondant à l’adresse Internet, dans ce cas l’adresse d’une passerelle. Il envoie ce datagramme et l’adresse de réseau local à l’interface de réseau local.
     
-- L’interface de réseau local crée un entête de réseau local, y attache le datagramme, puis envoie l’ensemble via le réseau local.
+- L’interface de réseau local crée une entête de réseau local, y attache le datagramme, puis envoie l’ensemble via le réseau local.
     
-- Le datagramme arrive sur la machine passerelle encapsulé dans l’entête de réseau local. L’interface de réseau local retire cet entête et remet le datagramme au module Internet.
+- Le datagramme arrive sur la machine passerelle encapsulé dans l’entête de réseau local. L’interface de réseau local retire cette entête et remet le datagramme au module Internet.
     
 - Le module Internet détermine, à partir de l’adresse Internet, que le datagramme doit être retransmis vers un autre hôte sur un second réseau. Il calcule l’adresse de réseau local de l’hôte de destination, puis fait appel à l’interface du réseau local correspondant pour envoyer le datagramme.
     
-- Cette interface de réseau local crée un entête de réseau local, y attache le datagramme et envoie l’ensemble vers l’hôte de destination. Sur cet hôte, l’interface de réseau local retire l’entête et remet le datagramme au module Internet.
+- Cette interface de réseau local crée une entête de réseau local, y attache le datagramme et envoie l’ensemble vers l’hôte de destination. Sur cet hôte, l’interface de réseau local retire l’entête et remet le datagramme au module Internet.
     
 - Le module Internet détermine que le datagramme est destiné à un programme applicatif de cet hôte. Il transmet alors les données au programme applicatif en réponse à un appel système, en fournissant l’adresse source et d’autres paramètres comme résultats de l’appel.
 
@@ -110,7 +110,7 @@ Figure 4 - Format Packet IPv4
 	- Ce champ indique le format de l'entête Internet. Il vaut 4 dans le cas d'un packet IPv4.
 
 - **IHL : 4 bits**  
-	- La longueur de l’entête Internet (Internet Header Length) est exprimée en mots de 32 bits. La valeur minimale pour un entête correct est 5.
+	- La longueur de l’entête Internet (Internet Header Length) est exprimée en mots de 32 bits. La valeur minimale pour une entête correcte est 5.
 
 - **Type de service : 8 bits**  
 	- Le type de service indique les **paramètres abstraits** de la **qualité de service souhaitée**. Ces paramètres servent à **guider la sélection des paramètres réels** du service lors de la transmission d’un datagramme à travers un réseau particulier.
